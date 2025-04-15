@@ -14,7 +14,7 @@ public class FactureDAO {
 
     // Ajouter une facture
     public void addFacture(Facture facture) {
-        String query = "INSERT INTO factures (montantTotal, dateEmission, userId) VALUES (?, ?, ?)";
+        String query = "INSERT INTO facture (montantTotal, dateEmission, userId) VALUES (?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setDouble(1, facture.getMontantTotal());
             statement.setDate(2, new java.sql.Date(facture.getDateEmission().getTime())); // Conversion Date SQL
@@ -32,7 +32,7 @@ public class FactureDAO {
 
     // Récupérer une facture par ID
     public Facture getFactureById(int id) {
-        String query = "SELECT * FROM factures WHERE id = ?";
+        String query = "SELECT * FROM facture WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -53,7 +53,7 @@ public class FactureDAO {
     // Récupérer toutes les factures d'un utilisateur
     public List<Facture> getAllFacturesByUserId(int userId) {
         List<Facture> factures = new ArrayList<>();
-        String query = "SELECT * FROM factures WHERE userId = ?";
+        String query = "SELECT * FROM facture WHERE userId = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -73,7 +73,7 @@ public class FactureDAO {
 
     // Supprimer une facture
     public void deleteFacture(int id) {
-        String query = "DELETE FROM factures WHERE id = ?";
+        String query = "DELETE FROM facture WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();

@@ -15,7 +15,7 @@ public class CategorieDAO {
 
     // Ajouter une nouvelle catégorie
     public void addCategorie(Categorie categorie) {
-        String query = "INSERT INTO categories (nom) VALUES (?)";
+        String query = "INSERT INTO categorie (nom) VALUES (?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, categorie.getNom());
             statement.executeUpdate();
@@ -26,7 +26,7 @@ public class CategorieDAO {
 
     // Récupérer une catégorie par son ID
     public Categorie getCategorieById(int id) {
-        String query = "SELECT * FROM categories WHERE id = ?";
+        String query = "SELECT * FROM categorie WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -45,7 +45,7 @@ public class CategorieDAO {
     // Récupérer toutes les catégories
     public List<Categorie> getAllCategories() {
         List<Categorie> categories = new ArrayList<>();
-        String query = "SELECT * FROM categories";
+        String query = "SELECT * FROM categorie";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -62,7 +62,7 @@ public class CategorieDAO {
 
     // Mettre à jour une catégorie
     public void updateCategorie(Categorie categorie) {
-        String query = "UPDATE categories SET nom = ? WHERE id = ?";
+        String query = "UPDATE categorie SET nom = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, categorie.getNom());
             statement.setInt(2, categorie.getId());
@@ -74,7 +74,7 @@ public class CategorieDAO {
 
     // Supprimer une catégorie
     public void deleteCategorie(int id) {
-        String query = "DELETE FROM categories WHERE id = ?";
+        String query = "DELETE FROM categorie WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();

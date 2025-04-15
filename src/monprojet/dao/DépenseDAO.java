@@ -15,7 +15,7 @@ public class DépenseDAO {
 
     // Ajouter une dépense
     public void addDépense(Dépense dépense) {
-        String query = "INSERT INTO dépenses (montant, catégorie_id, date, méthodeDePaiement, userId) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO depense (montant, categorie, date, methode_paiement, userId) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDouble(1, dépense.getMontant());
             statement.setInt(2, dépense.getCategorie().getId()); // Utilisation de l'ID de la catégorie
@@ -30,13 +30,13 @@ public class DépenseDAO {
 
     // Récupérer une dépense par son ID
     public Dépense getDépenseById(int id) {
-        String query = "SELECT * FROM dépenses WHERE id = ?";
+        String query = "SELECT * FROM depense WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 // Charger la catégorie depuis la base de données avec l'ID de la catégorie
-                int categorieId = resultSet.getInt("catégorie_id");
+                int categorieId = resultSet.getInt("categorie");
                 Categorie categorie = getCategorieById(categorieId);  // Méthode pour récupérer la catégorie par son ID
 
                 return new Dépense(
@@ -44,7 +44,7 @@ public class DépenseDAO {
                         resultSet.getDouble("montant"),
                         categorie,  // Passer l'objet catégorie ici
                         resultSet.getString("date"),
-                        resultSet.getString("méthodeDePaiement"),
+                        resultSet.getString("methode_paiement"),
                         resultSet.getInt("userId")
                 );
             }
@@ -57,13 +57,13 @@ public class DépenseDAO {
     // Récupérer toutes les dépenses d'un utilisateur
     public List<Dépense> getAllDépensesByUserId(int userId) {
         List<Dépense> dépenses = new ArrayList<>();
-        String query = "SELECT * FROM dépenses WHERE userId = ?";
+        String query = "SELECT * FROM depense WHERE userId = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 // Charger la catégorie depuis la base de données
-                int categorieId = resultSet.getInt("catégorie_id");
+                int categorieId = resultSet.getInt("categorie");
                 Categorie categorie = getCategorieById(categorieId);  // Méthode pour récupérer la catégorie par son ID
 
                 dépenses.add(new Dépense(
@@ -71,7 +71,7 @@ public class DépenseDAO {
                         resultSet.getDouble("montant"),
                         categorie,  // Passer l'objet catégorie ici
                         resultSet.getString("date"),
-                        resultSet.getString("méthodeDePaiement"),
+                        resultSet.getString("methode_paiement"),
                         resultSet.getInt("userId")
                 ));
             }
@@ -83,7 +83,7 @@ public class DépenseDAO {
 
     // Mettre à jour une dépense
     public void updateDépense(Dépense dépense) {
-        String query = "UPDATE dépenses SET montant = ?, catégorie_id = ?, date = ?, méthodeDePaiement = ? WHERE id = ?";
+        String query = "UPDATE depense SET montant = ?, categorie = ?, date = ?, methode_paiement = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDouble(1, dépense.getMontant());
             statement.setInt(2, dépense.getCategorie().getId()); // Utilisation de l'ID de la catégorie
@@ -98,7 +98,7 @@ public class DépenseDAO {
 
     // Supprimer une dépense
     public void deleteDépense(int id) {
-        String query = "DELETE FROM dépenses WHERE id = ?";
+        String query = "DELETE FROM depense WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -109,7 +109,7 @@ public class DépenseDAO {
 
     // Méthode pour récupérer une catégorie par son ID
     private Categorie getCategorieById(int id) {
-        String query = "SELECT * FROM catégories WHERE id = ?";
+        String query = "SELECT * FROM categorie WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();

@@ -16,7 +16,7 @@ public class AdminDAO {
 
     // Ajouter un administrateur
     public void addAdmin(Admin admin) {
-        String query = "INSERT INTO personnes (nom, prenom, email, motDePasse, type) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO personne (nom, prenom, email, motDePasse, type) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, admin.getNom());
             statement.setString(2, admin.getPrenom());
@@ -41,7 +41,7 @@ public class AdminDAO {
 
     // Ajouter un utilisateur à un administrateur (table de relation entre admin et utilisateur)
     private void addUtilisateurToAdmin(int adminId, Utilisateur utilisateur) {
-        String query = "INSERT INTO admin_utilisateurs (admin_id, utilisateur_id) VALUES (?, ?)";
+        String query = "INSERT INTO admin (adminId, userId) VALUES (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, adminId);
             statement.setInt(2, utilisateur.getId()); // Associer un utilisateur à l'admin par l'ID
@@ -53,7 +53,7 @@ public class AdminDAO {
 
     // Récupérer un administrateur par son ID
     public Admin getAdminById(int id) {
-        String query = "SELECT * FROM personnes WHERE id = ? AND type = 'admin'";
+        String query = "SELECT * FROM personne WHERE id = ? AND type = 'admin'";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -65,6 +65,7 @@ public class AdminDAO {
                         resultSet.getString("prenom"),
                         resultSet.getString("email"),
                         resultSet.getString("motDePasse"),
+                        resultSet.getString("type"),
                         utilisateurs
                 );
             }
@@ -74,23 +75,28 @@ public class AdminDAO {
         return null;
     }
 
-    // Récupérer les utilisateurs associés à un administrateur
     private List<Utilisateur> getUtilisateursByAdminId(int adminId) {
         List<Utilisateur> utilisateurs = new ArrayList<>();
-        String query = "SELECT u.id, u.nom, u.prenom, u.email, u.motDePasse, u.budgetTotal FROM utilisateurs u "
-                + "JOIN admin_utilisateurs au ON u.id = au.utilisateur_id WHERE au.admin_id = ?";
+        String query = "SELECT p.id AS userId, p.nom, p.prenom, p.email, p.motDePasse, p.type, u.budgetTotal " +
+                "FROM utilisateur u " +
+                "JOIN personne p ON u.userId = p.id " +
+                "JOIN admin au ON u.userId = au.userId " +
+                "WHERE au.adminId = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, adminId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                utilisateurs.add(new Utilisateur(
+                Utilisateur utilisateur = new Utilisateur(
                         resultSet.getString("nom"),
                         resultSet.getString("prenom"),
                         resultSet.getString("email"),
                         resultSet.getString("motDePasse"),
+                        resultSet.getString("type"),
                         resultSet.getDouble("budgetTotal"),
-                        new ArrayList<>() // Les dépenses peuvent être récupérées séparément
-                ));
+                        new ArrayList<>()
+                );
+                utilisateur.setId(resultSet.getInt("userId"));
+                utilisateurs.add(utilisateur);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -101,7 +107,7 @@ public class AdminDAO {
     // Récupérer tous les administrateurs
     public List<Admin> getAllAdmins() {
         List<Admin> admins = new ArrayList<>();
-        String query = "SELECT * FROM personnes WHERE type = 'admin'";
+        String query = "SELECT * FROM personne WHERE type = 'admin'";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -111,6 +117,7 @@ public class AdminDAO {
                         resultSet.getString("prenom"),
                         resultSet.getString("email"),
                         resultSet.getString("motDePasse"),
+                        resultSet.getString("type"),
                         utilisateurs
                 ));
             }
@@ -122,7 +129,7 @@ public class AdminDAO {
 
     // Supprimer un administrateur
     public void deleteAdmin(int id) {
-        String query = "DELETE FROM personnes WHERE id = ? AND type = 'admin'";
+        String query = "DELETE FROM personne WHERE id = ? AND type = 'admin'";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
@@ -133,7 +140,7 @@ public class AdminDAO {
 
     // Supprimer un utilisateur associé à un administrateur
     public void deleteUtilisateurFromAdmin(int adminId, int utilisateurId) {
-        String query = "DELETE FROM admin_utilisateurs WHERE admin_id = ? AND utilisateur_id = ?";
+        String query = "DELETE FROM admin WHERE adminId = ? AND userId = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, adminId);
             statement.setInt(2, utilisateurId);

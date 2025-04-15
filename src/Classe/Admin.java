@@ -1,14 +1,22 @@
 package Classe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Admin extends Personne {
     // Attributs spécifiques à l'Classe.Admin
     private List<Utilisateur> utilisateurs; // Liste des utilisateurs que l'Classe.Admin gère
 
-    public Admin(String nom, String prenom, String email, String motDePasse, List<Utilisateur> utilisateurs) {
-        super(nom, prenom, email, motDePasse); // Appel du constructeur de la classe Classe.Personne
-        this.utilisateurs = utilisateurs;
+    // Constructeur pour création initiale
+    public Admin(String nom, String prenom, String email, String motDePasse , String type) {
+        super(nom, prenom, email, motDePasse, type = "admin");
+        this.utilisateurs = new ArrayList<>();
+    }
+
+    // Constructeur pour chargement depuis la base
+    public Admin(String nom, String prenom, String email, String motDePasse, String type, List<Utilisateur> utilisateurs) {
+        super(nom, prenom, email, motDePasse, type);
+        this.utilisateurs = utilisateurs != null ? utilisateurs : new ArrayList<>();
     }
 
     // Getter et setter pour la liste des utilisateurs
@@ -48,4 +56,4 @@ public class Admin extends Personne {
             }
         }
     }
-}
+} 

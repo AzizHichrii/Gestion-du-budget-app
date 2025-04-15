@@ -15,7 +15,7 @@ public class RappelDAO {
 
     // Ajouter un rappel
     public void addRappel(Rappel rappel) {
-        String query = "INSERT INTO rappels (date, montant, description, userId) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO rappel (date, montant, description, userId) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDate(1, new java.sql.Date(rappel.getDate().getTime())); // Conversion de Date en SQL Date
             statement.setDouble(2, rappel.getMontant());
@@ -29,7 +29,7 @@ public class RappelDAO {
 
     // Récupérer un rappel par son ID
     public Rappel getRappelById(int id) {
-        String query = "SELECT * FROM rappels WHERE id = ?";
+        String query = "SELECT * FROM rappel WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -51,7 +51,7 @@ public class RappelDAO {
     // Récupérer tous les rappels d'un utilisateur par son ID
     public List<Rappel> getAllRappelsByUserId(int userId) {
         List<Rappel> rappels = new ArrayList<>();
-        String query = "SELECT * FROM rappels WHERE userId = ?";
+        String query = "SELECT * FROM rappel WHERE userId = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userId);
             ResultSet resultSet = statement.executeQuery();
@@ -72,7 +72,7 @@ public class RappelDAO {
 
     // Mettre à jour un rappel
     public void updateRappel(Rappel rappel) {
-        String query = "UPDATE rappels SET date = ?, montant = ?, description = ?, userId = ? WHERE id = ?";
+        String query = "UPDATE rappel SET date = ?, montant = ?, description = ?, userId = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDate(1, new java.sql.Date(rappel.getDate().getTime())); // Conversion de Date en SQL Date
             statement.setDouble(2, rappel.getMontant());
@@ -87,7 +87,7 @@ public class RappelDAO {
 
     // Supprimer un rappel
     public void deleteRappel(int id) {
-        String query = "DELETE FROM rappels WHERE id = ?";
+        String query = "DELETE FROM rappel WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();

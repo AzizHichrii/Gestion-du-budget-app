@@ -7,8 +7,8 @@ public class Utilisateur extends Personne {
     private double budgetTotal; // Budget défini par l'utilisateur
     private List<Dépense> dépenses; // Liste des dépenses associées à l'utilisateur
 
-    public Utilisateur(String nom, String prenom, String email, String motDePasse, double budgetTotal, List<Dépense> dépenses) {
-        super(nom, prenom, email, motDePasse); // Appel du constructeur de Personne
+    public Utilisateur(String nom, String prenom, String email, String motDePasse,String type, double budgetTotal, List<Dépense> dépenses) {
+        super(nom, prenom, email, motDePasse,type="user"); // Appel du constructeur de Personne
         this.budgetTotal = budgetTotal; // Initialisation du budget
         this.dépenses = dépenses; // Initialisation de la liste des dépenses
     }

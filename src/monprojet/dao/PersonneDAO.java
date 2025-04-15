@@ -15,12 +15,14 @@ public class PersonneDAO {
 
     // Ajouter une personne (Utilisateur ou Administrateur)
     public void addPersonne(Personne personne) {
-        String query = "INSERT INTO personnes (nom, prenom, email, motDePasse) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO personne (nom, prenom, email, motDePasse,type) VALUES (?, ?, ?, ?,?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, personne.getNom());
             statement.setString(2, personne.getPrenom());
             statement.setString(3, personne.getEmail());
             statement.setString(4, personne.getMotDePasse());
+            statement.setString(5, personne.getType());
+
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -29,7 +31,7 @@ public class PersonneDAO {
 
     // Récupérer une personne par son ID
     public Personne getPersonneById(int id) {
-        String query = "SELECT * FROM personnes WHERE id = ?";
+        String query = "SELECT * FROM personne WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -38,7 +40,9 @@ public class PersonneDAO {
                         resultSet.getString("nom"),
                         resultSet.getString("prenom"),
                         resultSet.getString("email"),
-                        resultSet.getString("motDePasse")
+                        resultSet.getString("motDePasse"),
+                        resultSet.getString("type")
+
                 ) {
                     // Implémentation anonyme car Personne est abstraite
                 };
@@ -52,7 +56,7 @@ public class PersonneDAO {
     // Récupérer toutes les personnes
     public List<Personne> getAllPersonnes() {
         List<Personne> personnes = new ArrayList<>();
-        String query = "SELECT * FROM personnes";
+        String query = "SELECT * FROM personne";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -60,7 +64,9 @@ public class PersonneDAO {
                         resultSet.getString("nom"),
                         resultSet.getString("prenom"),
                         resultSet.getString("email"),
-                        resultSet.getString("motDePasse")
+                        resultSet.getString("motDePasse"),
+                        resultSet.getString("type")
+
                 ) {
                     // Implémentation anonyme car Personne est abstraite
                 });
@@ -73,13 +79,15 @@ public class PersonneDAO {
 
     // Mettre à jour une personne
     public void updatePersonne(Personne personne) {
-        String query = "UPDATE personnes SET nom = ?, prenom = ?, email = ?, motDePasse = ? WHERE id = ?";
+        String query = "UPDATE personne SET nom = ?, prenom = ?, email = ?, motDePasse = ?, type = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, personne.getNom());
             statement.setString(2, personne.getPrenom());
             statement.setString(3, personne.getEmail());
             statement.setString(4, personne.getMotDePasse());
-            statement.setInt(5, Personne.getId()); // Utilisation de Personne.getId() pour l'ID
+            statement.setString(5, personne.getType());
+
+            statement.setInt(6, Personne.getId()); // Utilisation de Personne.getId() pour l'ID
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,7 +96,7 @@ public class PersonneDAO {
 
     // Supprimer une personne par son ID
     public void deletePersonne(int id) {
-        String query = "DELETE FROM personnes WHERE id = ?";
+        String query = "DELETE FROM personne WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();

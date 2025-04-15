@@ -14,7 +14,7 @@ public class PaiementDAO {
 
     // Ajouter un paiement
     public void addPaiement(Paiement paiement) {
-        String query = "INSERT INTO paiements (montant, datePaiement, methodePaiement, factureId) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO paiement (montant, datePaiement, methodePaiement, factureId) VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDouble(1, paiement.getMontant());
             statement.setDate(2, new java.sql.Date(paiement.getDatePaiement().getTime()));
@@ -28,7 +28,7 @@ public class PaiementDAO {
 
     // Récupérer un paiement par son ID
     public Paiement getPaiementById(int id) {
-        String query = "SELECT * FROM paiements WHERE id = ?";
+        String query = "SELECT * FROM paiement WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -50,7 +50,7 @@ public class PaiementDAO {
     // Récupérer tous les paiements
     public List<Paiement> getAllPaiements() {
         List<Paiement> paiements = new ArrayList<>();
-        String query = "SELECT * FROM paiements";
+        String query = "SELECT * FROM paiement";
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -70,7 +70,7 @@ public class PaiementDAO {
 
     // Mettre à jour un paiement
     public void updatePaiement(Paiement paiement) {
-        String query = "UPDATE paiements SET montant = ?, datePaiement = ?, methodePaiement = ?, factureId = ? WHERE id = ?";
+        String query = "UPDATE paiement SET montant = ?, datePaiement = ?, methodePaiement = ?, factureId = ? WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDouble(1, paiement.getMontant());
             statement.setDate(2, new java.sql.Date(paiement.getDatePaiement().getTime()));
@@ -85,7 +85,7 @@ public class PaiementDAO {
 
     // Supprimer un paiement
     public void deletePaiement(int id) {
-        String query = "DELETE FROM paiements WHERE id = ?";
+        String query = "DELETE FROM paiement WHERE id = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, id);
             statement.executeUpdate();
